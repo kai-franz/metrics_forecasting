@@ -25,8 +25,13 @@ def get_csv_header(cur):
 if __name__ == '__main__':
     workload_name = "tpcc"
 
+    # remove previous data
     subprocess.run(["sudo", "-u", "postgres", "psql", "-c", "DROP DATABASE IF EXISTS benchbase;"])
     subprocess.run(["sudo", "-u", "postgres", "psql", "-c", "CREATE DATABASE benchbase;"])
+
+    # turn off autovacuum
+    subprocess.run(["sudo", "bash", "-c", "\"echo 'autovacuum = off' >> /etc/postgresql/14/main/postgresql.conf\""])
+    subprocess.run(["sudo", "service", "postgresql", "restart"])
 
     conn = psycopg2.connect(database="benchbase", user="project1user", password="project1pass", host="localhost",
                             port="5432")

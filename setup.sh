@@ -21,10 +21,10 @@ sudo pg_dropcluster --stop 14 main
 # Make the mount point, format the disk, mount it
 sudo mkdir -p /mnt/postgresql
 sudo chmod 0777 /mnt/postgresql
-# sudo mkfs.ext4 -E nodiscard /dev/nvme1n1
-sudo mkfs.ext4 -E nodiscard /dev/sdc
-# sudo mount -o discard /dev/nvme1n1 /mnt/postgresql
-sudo mount -o discard /dev/sdc1 /mnt/postgresql
+sudo mkfs.ext4 -E nodiscard /dev/nvme1n1
+# sudo mkfs.ext4 -E nodiscard /dev/sdc
+sudo mount -o discard /dev/nvme1n1 /mnt/postgresql
+# sudo mount -o discard /dev/sdc1 /mnt/postgresql
 
 # Create the new cluster's data folder, then create the cluster
 sudo mkdir -p /mnt/postgresql/data

@@ -13,10 +13,9 @@ SAMPLE_FREQ = 1
 # adapted from https://pgdash.io/blog/essential-postgres-monitoring-part3.html
 table_growth_query = """
   SELECT ut.schemaname || '.' || ut.relname AS table_name,
-        pg_stat_all_tables.*,
+        ut.n_dead_tup, ut.n_live_tup,
        pg_table_size(ut.schemaname || '.' || ut.relname)
   FROM pg_stat_user_tables AS ut
-  JOIN pg_stat_all_tables ON pg_stat_all_tables.schemaname = ut.schemaname AND pg_stat_all_tables.relname = ut.relname
   ORDER BY table_name;
 """
 
@@ -31,9 +30,9 @@ def xmledit(param, value, fname):
     subprocess.run(["xmlstarlet", "edit", "--inplace", "--update", param, "--value", value, fname])
 
 # workloads = ['voter', 'tatp']
-workloads = ['tpcc', 'smallbank']
-scale_factors = [50, 100]
-work_times = [int(1*60*60)]
+workloads = ['ycsb']
+scale_factors = [100]
+work_times = [int(1*60)]
 
 if __name__ == '__main__':
     for scale_factor in scale_factors:
@@ -41,7 +40,7 @@ if __name__ == '__main__':
             for work_time in work_times:
                 workload_name = workload
                 config_file = f"config/postgres/sample_{workload_name}_config.xml"
-                experiment_name = f"noautovac_{workload_name}_scale_{scale_factor}_worktime_{work_time}_samplefreq_{SAMPLE_FREQ}_tsizeAnddeadtuple"
+                experiment_name = f"noautovac_{workload_name}_scale_{scale_factor}_worktime_{work_time}_samplefreq_{SAMPLE_FREQ}_tsizeAnddeadtuple_pgconfig_delete_25_dead_tup"
                 benchmark = workload
 
                 subprocess.run(["sudo", "service", "postgresql", "restart"])
